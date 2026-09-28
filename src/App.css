@@ -86,6 +86,53 @@ h1 {
   background: #dc2626;
 }
 
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.edit-btn,
+.save-btn,
+.cancel-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.edit-btn,
+.save-btn {
+  background: #3b82f6;
+}
+
+.edit-btn:hover,
+.save-btn:hover {
+  background: #2563eb;
+}
+
+.cancel-btn {
+  background: #9ca3af;
+}
+
+.cancel-btn:hover {
+  background: #6b7280;
+}
+
+.edit-form {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.edit-form input {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 1rem;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+}
+
 .empty {
   color: #9ca3af;
   text-align: center;

@@ -15,6 +15,8 @@ function loadTasks() {
 function App() {
   const [tasks, setTasks] = useState(loadTasks)
   const [text, setText] = useState('')
+  const [editingId, setEditingId] = useState(null)
+  const [editText, setEditText] = useState('')
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
@@ -38,6 +40,26 @@ function App() {
     setTasks(tasks.filter((task) => task.id !== id))
   }
 
+  const startEdit = (task) => {
+    setEditingId(task.id)
+    setEditText(task.text)
+  }
+
+  const cancelEdit = () => {
+    setEditingId(null)
+    setEditText('')
+  }
+
+  const saveEdit = (e) => {
+    e.preventDefault()
+    const trimmed = editText.trim()
+    if (!trimmed) return
+    setTasks(tasks.map((task) =>
+      task.id === editingId ? { ...task, text: trimmed } : task
+    ))
+    cancelEdit()
+  }
+
   return (
     <div className="app">
       <h1>タスクボード</h1>
@@ -53,17 +75,40 @@ function App() {
       <ul className="task-list">
         {tasks.map((task) => (
           <li key={task.id} className={task.completed ? 'task completed' : 'task'}>
-            <label>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => toggleTask(task.id)}
-              />
-              <span>{task.text}</span>
-            </label>
-            <button className="delete-btn" onClick={() => deleteTask(task.id)}>
-              削除
-            </button>
+            {editingId === task.id ? (
+              <form className="edit-form" onSubmit={saveEdit}>
+                <input
+                  type="text"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Escape' && cancelEdit()}
+                  autoFocus
+                />
+                <button type="submit" className="save-btn">保存</button>
+                <button type="button" className="cancel-btn" onClick={cancelEdit}>
+                  キャンセル
+                </button>
+              </form>
+            ) : (
+              <>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => toggleTask(task.id)}
+                  />
+                  <span onDoubleClick={() => startEdit(task)}>{task.text}</span>
+                </label>
+                <div className="actions">
+                  <button className="edit-btn" onClick={() => startEdit(task)}>
+                    編集
+                  </button>
+                  <button className="delete-btn" onClick={() => deleteTask(task.id)}>
+                    削除
+                  </button>
+                </div>
+              </>
+            )}
           </li>
         ))}
       </ul>
